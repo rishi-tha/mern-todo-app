@@ -1,0 +1,210 @@
+:root {
+  --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --panel-bg: rgba(255, 255, 255, 0.95);
+  --text-main: #2d3748;
+  --text-muted: #a0aec0;
+  --accent-blue: #4f46e5;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --shadow-main: 0 20px 40px rgba(0, 0, 0, 0.15);
+  --radius-lg: 24px;
+  --radius-md: 16px;
+}
+
+/* Smooth glassmorphic backdrop centered perfectly */
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-gradient);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Layout shell wrapper */
+.app-container {
+  width: 100%;
+  max-width: 750px;
+  padding: 24px;
+}
+
+/* Premium card design with glass effects */
+.todo-box {
+  background: var(--panel-bg);
+  backdrop-filter: blur(10px);
+  width: 100%;
+  padding: 50px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-main);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* Sleek gradient dashboard header */
+h2 {
+  margin-top: 0;
+  background: linear-gradient(to right, #4f46e5, #7c3aed);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+/* Input Row styling */
+.input-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+/* Clean, modern typographic fields */
+.input-row input {
+  flex: 1;
+  padding: 20px 24px;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  font-size: 22px;
+  outline: none;
+  font-weight: 500;
+  color: var(--text-main);
+  background: #f8fafc;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-row input:focus {
+  border-color: var(--accent-blue);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+}
+
+/* Styled high-action buttons */
+.input-row button {
+  padding: 0 40px;
+  border: none;
+  border-radius: var(--radius-md);
+  color: white;
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.btn-add-mode {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.btn-edit-mode {
+  background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+}
+
+.input-row button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.input-row button:active {
+  transform: translateY(0);
+}
+
+/* Clean spacing between generated records */
+.list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.empty-msg {
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 22px;
+  margin-top: 20px;
+}
+
+/* Individual list item layout - soft cards */
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 28px;
+  background: #ffffff;
+  border: 1px solid #edf2f7;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  transition: all 0.25s ease;
+}
+
+.todo-item:hover {
+  transform: scale(1.01) translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Dynamic line-height readable typography rules */
+.todo-text {
+  flex: 1;
+  cursor: pointer;
+  color: var(--text-main);
+  font-size: 24px;
+  font-weight: 600;
+  word-break: break-word;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+/* Dim text values & double line strikethrough configuration */
+.is-completed {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.is-completed .todo-text {
+  text-decoration: line-through !important;
+  text-decoration-thickness: 3px !important;
+  text-decoration-color: var(--accent-blue) !important;
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+/* Pill design controls handles */
+.action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-action {
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+}
+
+.btn-action.edit {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.btn-action.edit:hover {
+  background: #16a34a;
+  color: white;
+}
+
+.btn-action.delete {
+  background: #fef2f2;
+  color: var(--accent-red);
+}
+
+.btn-action.delete:hover {
+  background: var(--accent-red);
+  color: white;
+}

@@ -1,22 +1,45 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
-const connectDB = require('./config/db');
 require('dotenv').config();
 
 const app = express();
-
-// Fire up database connection
-connectDB();
-
-// Middleware modules
-app.use(cors());
 app.use(express.json());
+app.use(cors());
 
-// Bind the router modules matching your setup
-app.use('/api/todos', require('./routes/todoRoutes'));
+// MongoDB Connection
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch(err => console.log(err));
 
-// Basic health check route
-app.get('/', (req, res) => res.send('API running successfully'));
+// Todo Schema
+const todoSchema = new mongoose.Schema({
+  text: { type: String, required: true },
+  completed: { type: Boolean, default: false }
+});
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+const Todo = mongoose.model('Todo', todoSchema);
+
+// Routes
+app.get('/todos', async (req, res) => {
+  const todos = await Todo.find();
+  res.json(todos);
+});
+
+app.post('/todos', async (req, res) => {
+  const newTodo = new Todo(req.body);
+  await newTodo.save();
+  res.json(newTodo);
+});
+
+app.put('/todos/:id', async (req, res) => {
+  const updatedTodo = await Todo.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  res.json(updatedTodo);
+});
+
+app.delete('/todos/:id', async (req, res) => {
+  await Todo.findByIdAndDelete(req.params.id);
+  res.json({ message: "Deleted successfully" });
+});
+
+app.listen(5000, () => console.log("Server running on port 5000"));

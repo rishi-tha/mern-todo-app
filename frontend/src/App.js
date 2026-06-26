@@ -1,90 +1,76 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Todo from './components/Todo'; // Imported your new component
-import './index.css';
+import './App.css';
 
-const API_BASE_URL = 'http://localhost:5000/api/todos';
+const API_URL = "http://localhost:5000/todos";
 
 function App() {
   const [todos, setTodos] = useState([]);
-  const [taskText, setTaskText] = useState('');
-  const [editId, setEditId] = useState(null);
+  const [input, setInput] = useState('');
 
-  useEffect(() => { fetchTodos(); }, []);
+  useEffect(() => {
+    fetchTodos();
+  }, []);
 
   const fetchTodos = async () => {
-    try {
-      const response = await axios.get(API_BASE_URL);
-      setTodos(response.data);
-    } catch (err) { console.error(err); }
+    const res = await axios.get(API_URL);
+    setTodos(res.data);
   };
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    if (!taskText.trim()) return;
-    try {
-      if (editId) {
-        await axios.put(`${API_BASE_URL}/${editId}`, { text: taskText });
-        setEditId(null);
-      } else {
-        await axios.post(API_BASE_URL, { text: taskText });
-      }
-      setTaskText('');
-      fetchTodos();
-    } catch (err) { console.error(err); }
+  const addTodo = async () => {
+    if (!input) return;
+    const res = await axios.post(API_URL, { text: input });
+    setTodos([...todos, res.data]);
+    setInput('');
   };
 
-  const handleToggleComplete = async (id, currentStatus) => {
-    try {
-      await axios.put(`${API_BASE_URL}/${id}`, { completed: !currentStatus });
-      fetchTodos();
-    } catch (err) { console.error(err); }
+  const deleteTodo = async (id) => {
+    await axios.delete(`${API_URL}/${id}`);
+    setTodos(todos.filter(todo => todo._id !== id));
   };
 
-  const handleStartEdit = (todo) => {
-    setEditId(todo._id);
-    setTaskText(todo.text);
+  const toggleComplete = async (id, completed) => {
+    const res = await axios.put(`${API_URL}/${id}`, { completed: !completed });
+    setTodos(todos.map(todo => (todo._id === id ? res.data : todo)));
   };
 
-  const handleDeleteTodo = async (id) => {
-    try {
-      await axios.delete(`${API_BASE_URL}/${id}`);
-      fetchTodos();
-    } catch (err) { console.error(err); }
+  const editTodo = async (id) => {
+    const newText = prompt("Edit your task:");
+    if (newText) {
+      const res = await axios.put(`${API_URL}/${id}`, { text: newText });
+      setTodos(todos.map(todo => (todo._id === id ? res.data : todo)));
+    }
   };
 
   return (
-    <div className="app-container">
-      <div className="todo-box">
-        <h2>📋 Task Manager</h2>
-        <form onSubmit={handleFormSubmit} className="input-row">
-          <input 
-            type="text" 
-            placeholder="Add a new task..." 
-            value={taskText}
-            onChange={(e) => setTaskText(e.target.value)}
-          />
-          <button type="submit" className={editId ? "btn-edit-mode" : "btn-add-mode"}>
-            {editId ? 'Update' : 'Create'}
-          </button>
-        </form>
-
-        <div className="list-wrapper">
-          {todos.length === 0 ? (
-            <p className="empty-msg">No tasks found. Create one above!</p>
-          ) : (
-            todos.map((todo) => (
-              <Todo 
-                key={todo._id} 
-                todo={todo} 
-                onToggle={handleToggleComplete} 
-                onEdit={handleStartEdit} 
-                onDelete={handleDeleteTodo} 
-              />
-            ))
-          )}
-        </div>
+    <div className="App">
+      <h1>MERN To-Do List</h1>
+      <div className="input-container">
+        <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Add a task..." />
+        <button onClick={addTodo}>Add</button>
       </div>
+      <ul>
+        {todos.map(todo => (
+          <li key={todo._id} className={todo.completed ? 'completed' : ''}>
+             <div className="task-text-container">
+        {/* Visual Checkbox to show completion status */}
+        <input 
+          type="checkbox" 
+          checked={todo.completed} 
+          onChange={() => toggleComplete(todo._id, todo.completed)} 
+          className="todo-checkbox"
+        />
+        <span onClick={() => toggleComplete(todo._id, todo.completed)}>
+          {todo.text}
+        </span>
+      </div>
+            <div className="action-buttons">
+              <button onClick={() => editTodo(todo._id)}>Edit</button>
+              <button onClick={() => deleteTodo(todo._id)}>Delete</button>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

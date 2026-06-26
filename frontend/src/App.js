@@ -8,7 +8,9 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState('');
 
+
   useEffect(() => {
+    console.log("API_URL=", API_URL);
     fetchTodos();
   }, []);
 
